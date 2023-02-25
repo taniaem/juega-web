@@ -5,10 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 // import { faTwitterSquare, faTwitch, faGithubSquare } from '@fortawesome/free-brands-svg-icons'
 import {
     faBars,
+    faCircleCheck,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
     faBars,
+    faCircleCheck,
 )
 
 // This is important, we are going to let Nuxt worry about the CSS
