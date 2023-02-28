@@ -131,7 +131,52 @@
                 ></v-text-field>
               </div>
               <div class="mt-1">
-                <v-text-field label="Teléfono"></v-text-field>
+                <v-row no-gutters>
+                  <v-col cols="3">
+                    <p>
+                      <v-select
+                        :items="countryPhoneCodes"
+                        item-title="itemSelectedText"
+                        item-value="code"
+                        v-model="formState.selectedPhoneCountry" 
+                        density="comfortable"
+                      >
+                        <template
+                          v-slot:prepend-inner
+                          v-if="formState.selectedPhoneCountry !== null"
+                        >
+                          <div class="flag" :class="countrySelectedFlag"></div>
+                        </template>
+
+                        <template v-slot:item="{ item, props }">
+                          <v-list-item v-bind="props" title="">
+                            <table>
+                              <tbody>
+                                <tr>
+                                  <td>
+                                    <div class="flag" :class="item.raw.class"></div> 
+                                  </td>
+                                  <td width="2" style="width: 2px;"></td>
+                                  <td>
+                                    {{ item.raw.itemText }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>                            
+                          </v-list-item>
+                        </template>
+
+                        <template v-slot:selection="{ item }">
+                          {{ item.title }}
+                        </template>
+                      </v-select>
+                      {{ formState.selectedPhoneCountry }}
+                    </p>
+                  </v-col>
+                  <v-col cols="9">
+                    <v-text-field label="Teléfono"></v-text-field>
+                  </v-col>
+                </v-row>
               </div>
               <div class="mt-1">
                 <v-checkbox
@@ -184,11 +229,20 @@ import { ajax } from "rxjs/ajax";
 
 import { endWith, map, startWith } from "rxjs/operators";
 
+import { countryPhoneCodes } from "~/helpers/countryPhoneCodes";
+
 const form = ref(null);
 const confirmPasswordField = ref(null);
 const passwordField = ref(null);
 
 let isSubmitLoading = ref(false);
+
+//let countryCodes = ref(countryPhoneCodes);
+// let selectedPhoneCountry = ref(null);
+// const selectCountry = (country = null) => {
+//   console.log('rule => ', country);
+//   console.log('ok');
+// }
 
 const formState = reactive({
   username: "",
@@ -199,6 +253,13 @@ const formState = reactive({
   birthdate: "",
   over18: false,
   agreTerms: false,
+  selectedPhoneCountry: null,
+});
+
+let countrySelectedFlag = computed(() => {
+  if (formState.selectedPhoneCountry !== null) {
+    return `flag-${formState.selectedPhoneCountry.toLowerCase()}`;
+  }
 });
 
 const formRules = computed(() => {
@@ -308,14 +369,15 @@ const submitForm = async () => {
     //await loginStore.tryToLogin();
     console.log("form ok");
 
-    await ajax
+    (await ajax
       .getJSON("https://reqres.in/api/users/2?delay=3")
       .pipe(
-        startWith<string>("loading"),
-        endWith<string>("notloading"),
-        map<any>((d) => (typeof d === "string" ? d : d.data))
-      )
-      .subscribe<any>((resp) => {
+        startWith < string > "loading",
+        endWith < string > "notloading",
+        map < any > ((d) => (typeof d === "string" ? d : d.data))
+      ).subscribe) <
+      any >
+      ((resp) => {
         if (resp === "loading") {
           isSubmitLoading.value = true;
         }
